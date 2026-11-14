@@ -1,9 +1,9 @@
 class Xynaut < Formula
   desc "Xynoplex CLI for running and managing local Semiont stacks"
-  homepage "https://github.com/Xynoplex/xynaut"
-  url "https://github.com/Xynoplex/xynaut/archive/3812f5c.tar.gz"
+  homepage "https://github.com/Xynoplex/cli"
+  url "https://github.com/Xynoplex/cli/archive/ce059ff.tar.gz"
   version "0.9.0"
-  sha256 "68800b9c73725bc66dda089a27bd1afd2a1ac37225e83e894e3c68d96ae98a7b"
+  sha256 "2b2838b77f5d4183fa17c7ebe7d8bcd76116edb431cc3d60b1398918c21cff19"
   license "Apache-2.0"
 
   depends_on "go" => :build
@@ -11,10 +11,10 @@ class Xynaut < Formula
 
   def install
     ldflags = "-s -w " \
-              "-X github.com/Xynoplex/xynaut/internal/launcher.BuildVersion=#{version} " \
-              "-X github.com/Xynoplex/xynaut/internal/launcher.BuildCommit=" \
-              "3812f5c8e302d2ad45144bf5858573eaa5ac342f " \
-              "-X github.com/Xynoplex/xynaut/internal/launcher.BuildDate=homebrew"
+              "-X github.com/Xynoplex/cli/internal/launcher.BuildVersion=#{version} " \
+              "-X github.com/Xynoplex/cli/internal/launcher.BuildCommit=" \
+              "ce059ffb0927f989f2b1aa38b19b3dc56d3a10d4 " \
+              "-X github.com/Xynoplex/cli/internal/launcher.BuildDate=homebrew"
     system "go", "build", *std_go_args(ldflags: ldflags), "./cmd/xynaut"
   end
 
