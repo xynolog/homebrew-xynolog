@@ -3,6 +3,10 @@ version: 2
 # One pull request, twice a month at most: the actions' updates are one group,
 # proposed on the 1st and the 15th, after a week's cooldown.
 
+# Security updates are grouped the same way, in a group of each entry's own,
+# and Dependabot raises them when an advisory is published, not on the
+# schedule; neither the cooldown nor the one-PR limit holds them back.
+
 updates:
   - package-ecosystem: github-actions
     labels: ["dependencies"]
@@ -14,6 +18,9 @@ updates:
     cooldown:
       default-days: 7
     groups:
+      github-actions-security:
+        applies-to: security-updates
+        patterns: ["*"]
       github-actions:
         patterns: ["*"]
     commit-message:
