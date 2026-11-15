@@ -1,11 +1,11 @@
-# Xynaut Homebrew Tap
+# Xynolog Homebrew Tap
 
-Install Xynaut with:
+Install Xynolog with:
 
 ```sh
-brew install xynolog/xynolog/xynaut
+brew install xynolog/xynolog/xynolog
 ```
 
-Homebrew builds the formula from a pinned Xynaut source snapshot. Xynaut also
+Homebrew builds the formula from a pinned Xynolog source snapshot. Xynolog also
 needs `git` and one supported container runtime (Apple `container`, Docker, or
 Podman) to run local stacks.
