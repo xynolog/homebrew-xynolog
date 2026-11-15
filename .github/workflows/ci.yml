@@ -20,7 +20,13 @@ jobs:
   # Every commit of a pull request is signed off by its author (the org's
   # CONTRIBUTING.md).
   dco:
-    uses: xynolog/.github/.github/workflows/dco.yml@a0c8f43b045ec70558c62080a36d2057f9dc3126
+    uses: xynolog/.github/.github/workflows/dco.yml@b3dcbb9f9db37476c2bd259711ebaac6df777fbf
+
+  # On a push to main, the repository's labels become the org's seven.
+  labels:
+    uses: xynolog/.github/.github/workflows/labels.yml@b3dcbb9f9db37476c2bd259711ebaac6df777fbf
+    permissions:
+      issues: write
 
   # What `brew install xynolog/xynolog/xynolog` does, on both systems
   # Homebrew runs on: the formula passes brew's style and audit, builds from
@@ -45,7 +51,7 @@ jobs:
   gate:
     name: CI Gate
     if: always()
-    needs: [dco, formula]
+    needs: [dco, labels, formula]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
