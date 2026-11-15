@@ -2,7 +2,7 @@ class Xynaut < Formula
   desc "Xynoplex CLI for running and managing local Semiont stacks"
   homepage "https://github.com/Xynoplex/cli"
   url "https://github.com/Xynoplex/cli/archive/ce059ff.tar.gz"
-  version "0.9.0"
+  version "0.7.3"
   sha256 "2b2838b77f5d4183fa17c7ebe7d8bcd76116edb431cc3d60b1398918c21cff19"
   license "Apache-2.0"
 
@@ -19,6 +19,6 @@ class Xynaut < Formula
   end
 
   test do
-    assert_match "xynaut 0.9.0", shell_output("#{bin}/xynaut --version")
+    assert_match "xynaut 0.7.3", shell_output("#{bin}/xynaut --version")
   end
 end
