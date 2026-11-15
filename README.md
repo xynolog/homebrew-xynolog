@@ -3,7 +3,7 @@
 Install Xynaut with:
 
 ```sh
-brew install xynoplex/xynaut/xynaut
+brew install xynolog/xynolog/xynaut
 ```
 
 Homebrew builds the formula from a pinned Xynaut source snapshot. Xynaut also
