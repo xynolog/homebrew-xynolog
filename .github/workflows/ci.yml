@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A newer run of the same event on the same ref supersedes an older one. A
+# merge queue entry has a ref of its own, so entries never cancel each other.
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Every commit of a pull request is signed off by its author (the org's
+  # CONTRIBUTING.md).
+  dco:
+    uses: xynolog/.github/.github/workflows/dco.yml@a0c8f43b045ec70558c62080a36d2057f9dc3126
+
+  # What `brew install xynolog/xynolog/xynolog` does, on both systems
+  # Homebrew runs on: the formula passes brew's style and audit, builds from
+  # its pinned source, and passes its own test.
+  formula:
+    name: The formula on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: Homebrew/actions/setup-homebrew@63a2d4d8d4193eab3e62b1b782ff3ab8408f5b29
+      - run: brew style xynolog/xynolog
+      - run: brew audit --strict --online --formula xynolog/xynolog/xynolog
+      - run: brew install --build-from-source xynolog/xynolog/xynolog
+      - run: brew test xynolog/xynolog/xynolog
+
+  # What the ruleset requires. It waits for every other job, a census holds
+  # that list to the workflow's jobs, and it fails when any of them failed or
+  # was cancelled. A job skipped by its own condition passes.
+  gate:
+    name: CI Gate
+    if: always()
+    needs: [dco, formula]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: .github/workflows
+      - name: The gate waits for every other job
+        run: |
+          jobs="$(yq '.jobs | keys | .[] | select(. != "gate")' .github/workflows/ci.yml | sort)"
+          waits="$(yq '.jobs.gate.needs[]' .github/workflows/ci.yml | sort)"
+          if [ "$jobs" != "$waits" ]; then
+            echo "CI Gate's needs differ from the workflow's jobs (< jobs, > needs):" >&2
+            diff <(echo "$jobs") <(echo "$waits") >&2
+            exit 1
+          fi
+      - name: Every job it waits for passed or was skipped
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          echo "$NEEDS" | jq -e 'all(.[]; .result == "success" or .result == "skipped")' >/dev/null

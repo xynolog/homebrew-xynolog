@@ -1,0 +1,19 @@
+version: 2
+
+# One pull request, twice a month at most: the actions' updates are one group,
+# proposed on the 1st and the 15th, after a week's cooldown.
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: cron
+      cronjob: "0 6 1,15 * *"
+    open-pull-requests-limit: 1
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
